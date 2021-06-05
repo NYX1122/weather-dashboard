@@ -18,12 +18,12 @@
         <section class="col-md-5 col-lg-4 col-xl-4 col-xxl-3" id="search-section">
             <div class="d-grid gap-3 mb-3 pb-3 border-bottom border-dark" id="search-bar">
                 <h2 class="fw-bold display-6">Search for a City:</h2>
-                <input class="form-control py-2 fs-5" type="text" placeholder="Enter City Name" id="search">
-                <button class="btn btn-info text-white fs-5" type="submit">Search</button>
+                <input class="form-control py-2 fs-5" type="text" placeholder="Enter City Name" id="search-city">
+                <button class="btn btn-info text-white fs-5" type="submit" id="search-button">Search</button>
             </div>
             <div class="d-grid gap-3" id="major-cities">
                 <button class="btn btn-secondary text-black fs-5" type="button">Austin</button>
-                <button class="btn btn-secondary text-black fs-5" type="button">Chicago</button>
+                <button class="btn btn-secondary text-black fs-5" type="button">Chicago</button> 
                 <button class="btn btn-secondary text-black fs-5" type="button">New York</button>
                 <button class="btn btn-secondary text-black fs-5" type="button">Orlando</button>
                 <button class="btn btn-secondary text-black fs-5" type="button">San Francisco</button>
@@ -35,12 +35,12 @@
 
         <div id="output-wrapper" class="row col mt-3">
             <section class="col-12 card pb-3" id="city-section">
-                <h2 class="fw-bold display-6 mb-4">Random city</h2>
+                <h2 class="fw-bold display-6 mb-4 mt-3" id="city-section-header"></h2>
                 <ul class="d-grid gap-3">
-                    <li class="fs-5 fw-bold">Temp: </li>
-                    <li class="fs-5 fw-bold">Wind: </li>
-                    <li class="fs-5 fw-bold">Humidity: </li>
-                    <li class="fs-5 fw-bold">UV index: </li>
+                    <li class="fs-5 fw-bold" id="temp">Temp: </li>
+                    <li class="fs-5 fw-bold" id="wind">Wind: </li>
+                    <li class="fs-5 fw-bold" id="humid">Humidity: </li>
+                    <li class="fs-5 fw-bold" id="uvi">UV index: </li>
                 </ul>
             </section>
 
