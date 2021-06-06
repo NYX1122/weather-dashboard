@@ -5,8 +5,28 @@ var currWindEl = $("#wind");
 var currHumidEl = $("#humid");
 var currUviEl = $("#uvi");
 
-var citySubmitHandler = function(lat, long) {
-    citySectionHeaderEl.text(searchInputEl.val());
+var citySubmitHandler = function(city) {
+    citySectionHeaderEl.text(city);
+    var geocodeApi = "http://api.positionstack.com/v1/forward?access_key=6a0a7bfe7991fb3b771c2cfee43f426b&query=";
+    var fetchGeocodeUrl = geocodeApi + city;
+    fetch(fetchGeocodeUrl).then(function(response) {
+        if (response.ok) {
+            response.json().then(function(data) {
+                cityLatitude = data.data[0].latitude;
+                cityLongitude = data.data[0].longitude;
+                weatherApiHandler(cityLatitude, cityLongitude);
+            })
+        }
+        else {
+            alert("City not found. Please try again.");
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect to servers.");
+    });
+}
+
+var weatherApiHandler = function(lat, long) {
     var weatherApi = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + long + "&units=imperial&exclude=minutely,hourly&appid=bd623837758ad959f4db0c37c609a865";
     fetch(weatherApi).then(function(response) {
         if (response.ok) {
@@ -36,33 +56,49 @@ var forecastDisplay = function(weatherObj) {
         weatherDay = weatherObj.daily[i];
         for(x = 0; x < 5; x++) {
             var cardLiEl = $("#card-" + i).children().eq(x);
-            if(x = 0) {
-                var converter = weatherDay.dt
-                converter = converter * 1000
-                dateObject = new Date(converter);
-                console.log(dateObject);
+            if(x === 0) {
+                cardLiEl.text("");
+                var unix = weatherDay.dt;
+                time = dayjs.unix(unix)
+                time = dayjs(time).format("MM/DD/YY");
+                cardLiEl.append(time);
+            }
+            if(x === 1) {
+                cardLiEl.html("");
+                var icon = weatherDay.weather[0].icon;
+                cardLiEl.html("<img src='" + "http://openweathermap.org/img/wn/" + icon + "@2x.png" + "'><img>");
+            }
+            if(x === 2) {
+                cardLiEl.text("Temp: ")
+                cardLiEl.append(weatherDay.temp.day + "°F");
+            }
+            if(x === 3) {
+                cardLiEl.text("Wind: ")
+                cardLiEl.append(weatherDay.wind_speed + " mph");
+            }
+            if(x === 4) {
+                cardLiEl.text("Humidity: ")
+                cardLiEl.append(weatherDay.humidity + "%");
             }
         }
     }
 }
 
+var clearValues = function() {
+    citySectionHeaderEl.text("");
+    currTempEl.text("Temp: ");
+    currWindEl.text("Wind: ");
+    currHumidEl.text("Humidity: ");
+    currUviEl.text("UV Index: ");
+}
+
 $("#search-button").on("click", function() {
-    debugger;
-    var geocodeApi = "http://api.positionstack.com/v1/forward?access_key=6a0a7bfe7991fb3b771c2cfee43f426b&query=";
-    var fetchGeocodeUrl = geocodeApi + searchInputEl.val();
-    fetch(fetchGeocodeUrl).then(function(response) {
-        if (response.ok) {
-            response.json().then(function(data) {
-                cityLatitude = data.data[0].latitude;
-                cityLongitude = data.data[0].longitude;
-                citySubmitHandler(cityLatitude, cityLongitude);
-            })
-        }
-        else {
-            alert("City not found. Please try again.");
-        }
-    })
-    .catch(function(error) {
-        alert("Unable to connect to servers.");
-    });
-})
+    clearValues();
+    citySubmitHandler(searchInputEl.val());
+});
+
+$("#major-cities").on("click", "button", function() {
+    clearValues();
+    var city = $(this).text();
+    citySubmitHandler(city);
+});
