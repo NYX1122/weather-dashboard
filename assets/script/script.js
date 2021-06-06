@@ -22,14 +22,32 @@ var citySubmitHandler = function(lat, long) {
                 forecastDisplay(data);
             })
         }
+        else {
+            alert("Weather not found. Please try a different city.");
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect to servers.");
     });
 }
 
 var forecastDisplay = function(weatherObj) {
-    
+    for (i = 1; i < 6; i++) {
+        weatherDay = weatherObj.daily[i];
+        for(x = 0; x < 5; x++) {
+            var cardLiEl = $("#card-" + i).children().eq(x);
+            if(x = 0) {
+                var converter = weatherDay.dt
+                converter = converter * 1000
+                dateObject = new Date(converter);
+                console.log(dateObject);
+            }
+        }
+    }
 }
 
 $("#search-button").on("click", function() {
+    debugger;
     var geocodeApi = "http://api.positionstack.com/v1/forward?access_key=6a0a7bfe7991fb3b771c2cfee43f426b&query=";
     var fetchGeocodeUrl = geocodeApi + searchInputEl.val();
     fetch(fetchGeocodeUrl).then(function(response) {
