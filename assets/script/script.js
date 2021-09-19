@@ -7,14 +7,14 @@ var currUviEl = $("#uvi");
 
 var citySubmitHandler = function(city) {
     citySectionHeaderEl.text(city);
-    var geocodeApi = "http://api.positionstack.com/v1/forward?access_key=6a0a7bfe7991fb3b771c2cfee43f426b&query=";
+    var geocodeApi = "https://geocode.xyz/?json=1&locate=";
     var fetchGeocodeUrl = geocodeApi + city;
     fetch(fetchGeocodeUrl).then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
-                cityLatitude = data.data[0].latitude;
-                cityLongitude = data.data[0].longitude;
-                weatherApiHandler(cityLatitude, cityLongitude);
+                const lat = data.latt;
+                const long = data.longt;
+                weatherApiHandler(lat, long);
             })
         }
         else {
@@ -34,11 +34,21 @@ var weatherApiHandler = function(lat, long) {
                 var temp = currTempEl.text() + data.current.temp + "°F";
                 var wind = currWindEl.text() + data.current.wind_speed + " mph";
                 var humid = currHumidEl.text() + data.current.humidity + "%";
-                var uvind = currUviEl.text() + data.current.uvi;
+                var uvind = data.current.uvi;
                 currTempEl.text(temp);
                 currWindEl.text(wind);
                 currHumidEl.text(humid);
-                currUviEl.text(uvind);
+                var color = "";
+                if (uvind <= 2) {
+                    color = "success";
+                }
+                else if (uvind > 2 && uvind < 8) {
+                    color = "warning";
+                }
+                else {
+                    color = "danger";
+                };
+                currUviEl.append("<span class='fs-5 badge bg-" + color + "'>" + uvind + "<span>");
                 forecastDisplay(data);
             })
         }
@@ -93,6 +103,7 @@ var clearValues = function() {
 }
 
 $("#search-button").on("click", function() {
+    searchInputEl.attr("autosave", searchInputEl.val());
     clearValues();
     citySubmitHandler(searchInputEl.val());
 });
